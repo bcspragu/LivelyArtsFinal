@@ -1,0 +1,9 @@
+.btn-vote {
+  margin-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+  .btn-vote {
+    margin-bottom: 0;
+  }
+}

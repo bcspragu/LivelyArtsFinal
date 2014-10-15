@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -16,13 +17,14 @@ var userLock = &sync.Mutex{}
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/", mainHandler).Methods("POST")
-	r.HandleFunc("/", voteHandler).Methods("GET")
+	r.HandleFunc("/", mainHandler).Methods("GET")
+	r.HandleFunc("/", voteHandler).Methods("POST")
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./js"))))
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
 	http.Handle("/", r)
 
-	err := http.ListenAndServe(":8080", nil)
+	log.Println("Starting server...")
+	err := http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
@@ -40,8 +42,14 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		session.Values["Vote"] = nil
 		userLock.Unlock()
 	}
-	session.Save(r, w)
-	templates.ExecuteTemplate(w, "lively.html", struct{}{})
+	err = session.Save(r, w)
+	if err != nil {
+		log.Print("Error saving session:", err)
+	}
+	err = templates.ExecuteTemplate(w, "lively.html", struct{}{})
+	if err != nil {
+		log.Print("Error executing template:", err)
+	}
 }
 
 func voteHandler(w http.ResponseWriter, r *http.Request) {
