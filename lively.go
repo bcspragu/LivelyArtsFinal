@@ -1,4 +1,4 @@
-package lively
+package main
 
 import (
 	"github.com/gorilla/mux"
@@ -14,13 +14,18 @@ var store = sessions.NewCookieStore([]byte("thisistotallyapasswordimcommittingto
 var userCount = 0
 var userLock = &sync.Mutex{}
 
-func init() {
+func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainHandler).Methods("POST")
 	r.HandleFunc("/", voteHandler).Methods("GET")
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./js"))))
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
 	http.Handle("/", r)
+
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
