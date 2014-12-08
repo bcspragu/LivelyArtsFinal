@@ -1,9 +1,31 @@
-.btn-vote {
-  margin-bottom: 10px;
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
 }
 
-@media (min-width: 768px) {
-  .btn-vote {
-    margin-bottom: 0;
-  }
+.holder {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+}
+
+input[type="text"] {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 5px;
+  text-align: center;
+  width: 50%;
+  font-family: sans-serif;
+  font-size: 18px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  border: 0;
+}
+
+input[type="text"]:focus {
+  outline: none;
 }
